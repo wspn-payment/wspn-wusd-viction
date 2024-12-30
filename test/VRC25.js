@@ -6,6 +6,7 @@ function splitSignature(sig) {
     const r = sig.slice(0, 66);  // 32 bytes, 66 hex characters
     const s = '0x' + sig.slice(66, 130);  // 32 bytes, 64 hex characters
     const v = parseInt(sig.slice(130, 132), 16);  // recovery id
+
     return { v, r, s };
 }
 
@@ -129,7 +130,7 @@ describe("vrc25 test", function () {
             name: await vrc25.name(),
             version: "1",
             chainId: await ethers.provider.getNetwork().then((network) => network.chainId),
-            verifyingContract: vrc25.address,
+            verifyingContract: vrc25.target,
         };
 
         const permitData = {
@@ -139,17 +140,12 @@ describe("vrc25 test", function () {
             nonce,
             deadline,
         };
-        console.log(permitData)
         const signature = await owner.signTypedData(domain, { Permit: [ { name: "owner", type: "address" }, { name: "spender", type: "address" }, { name: "value", type: "uint256" }, { name: "nonce", type: "uint256" }, { name: "deadline", type: "uint256" } ] }, permitData);
-
         const {  v, r, s } = splitSignature(signature);
-        console.log("owner address:",owner.address)
         await vrc25.permit(owner.address, addr1.address, value, deadline, v, r, s);
-        const deSigner = await vrc25.deSigner();
-        console.log(deSigner)
 
-        // const allowance = await vrc25.allowance(owner.address, addr1.address);
-        // expect(allowance).to.equal(value);
+        const allowance = await vrc25.allowance(owner.address, addr1.address);
+        expect(allowance).to.equal(value);
     });
 
 })

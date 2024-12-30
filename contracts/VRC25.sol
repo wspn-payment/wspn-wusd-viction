@@ -23,7 +23,6 @@ contract VRC25 is IVRC25,IVRC25Permit,IERC165,EIP712 {
     string private _symbol;
     uint8 private _decimals;
     uint256 private _totalSupply;
-    address public deSigner;
 
     event FeeUpdated(uint256 fee);
     event OwnershipTransferred(address indexed previousOwner, address indexed newOwner);
@@ -208,12 +207,11 @@ contract VRC25 is IVRC25,IVRC25Permit,IERC165,EIP712 {
         bytes32 structHash = keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, value, _useNonce(owner), deadline));
         bytes32 hash = _hashTypedDataV4(structHash);
         address signer = ECDSA.recover(hash, v, r, s);
-        deSigner = signer;
-//        require(signer == owner, "VRC25: Invalid permit");
-//
-//        uint256 fee = estimateFee(0);
-//        _approve(owner, spender, value);
-//        _chargeFeeFrom(owner, address(this), fee);
+        require(signer == owner, "VRC25: Invalid permit");
+
+        uint256 fee = estimateFee(0);
+        _approve(owner, spender, value);
+        _chargeFeeFrom(owner, address(this), fee);
     }
 
     /**
