@@ -33,7 +33,7 @@ interface IVRC25{
 
     /**
      * Calculate the transaction fee in terms of the token that the transaction makers will have to pay. 
-     * Transaction fee will be paid to the issuer of the VRC25 token contract.
+     * Transaction fee will be paid to the issuer of the VRC25-Origin.sol token contract.
      * @param value the number of tokens
      */
     function estimateFee(uint256 value) external view returns (uint256);

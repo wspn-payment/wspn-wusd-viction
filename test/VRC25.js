@@ -17,8 +17,8 @@ describe("vrc25 test", function () {
     let addr1;
     let addr2;
     let addr3;
-    const name = "VRC25 Token";
-    const symbol = "VRC25";
+    const name = "VRC25-Origin.sol Token";
+    const symbol = "VRC25-Origin.sol";
     const decimals = 18;
     const version = "1";
 
@@ -26,7 +26,7 @@ describe("vrc25 test", function () {
         // get account address
         [owner, addr1, addr2, addr3] = await ethers.getSigners();
 
-        // 部署 VRC25 合约
+        // 部署 VRC25-Origin.sol 合约
         VRC25 = await ethers.getContractFactory("VRC25");
         vrc25 = await VRC25.deploy(name, symbol, decimals, version);
         await vrc25.waitForDeployment();
@@ -59,7 +59,7 @@ describe("vrc25 test", function () {
         const transferAmount = ethers.parseUnits("1000", 18);
 
         await expect(vrc25.connect(addr1).transfer(addr2.address, transferAmount)).to.be.revertedWith(
-            "VRC25: insuffient balance"
+            "VRC25-Origin.sol: insuffient balance"
         );
     });
 
