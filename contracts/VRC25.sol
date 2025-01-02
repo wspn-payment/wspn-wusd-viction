@@ -367,7 +367,7 @@ UUPSUpgradeable
      * @param addedValue The amount by which allowance is increased.
      * @return True if successful.
      */
-    function increaseAllowance(address spender, uint256 addedValue) public virtual whenNotPaused returns (bool) {
+    function increaseAllowance(address spender, uint256 addedValue) public virtual override whenNotPaused returns (bool) {
         address owner = _msgSender();
         _approve(owner, spender, allowance(owner, spender) + addedValue);
         return true;
@@ -393,14 +393,7 @@ UUPSUpgradeable
     function decreaseAllowance(
         address spender,
         uint256 subtractedValue
-    ) public virtual whenNotPaused returns (bool) {
-        // address owner = _msgSender();
-        // uint256 currentAllowance = allowance(owner, spender);
-        // require(currentAllowance >= subtractedValue, "ERC20: decreased allowance below zero");
-        // unchecked {
-        //      _approve(owner, spender, currentAllowance - subtractedValue);
-        // }
-        // return true;
+    ) public virtual override whenNotPaused returns (bool) {
     }
 
     /**
@@ -486,7 +479,7 @@ UUPSUpgradeable
      * @param to The address that receives the transfer `amount`.
      * @param amount The number of tokens sent to the `to` address.
      */
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual whenNotPaused {
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal override virtual whenNotPaused {
 
     }
 

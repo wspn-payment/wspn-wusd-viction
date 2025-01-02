@@ -29,17 +29,17 @@ interface IERC20Errors {
     //  */
     // error ERC20InsufficientBalance(address sender, uint256 balance, uint256 needed);
 
-    // /**
-    //  * @dev Indicates a failure with the token `sender`. Used in transfers.
-    //  * @param sender Address whose tokens are being transferred.
-    //  */
-    // error ERC20InvalidSender(address sender);
+     /**
+      * @dev Indicates a failure with the token `sender`. Used in transfers.
+      * @param sender Address whose tokens are being transferred.
+      */
+     error ERC20InvalidSender(address sender);
 
-    // /**
-    //  * @dev Indicates a failure with the token `receiver`. Used in transfers.
-    //  * @param receiver Address to which tokens are being transferred.
-    //  */
-    // error ERC20InvalidReceiver(address receiver);
+     /**
+      * @dev Indicates a failure with the token `receiver`. Used in transfers.
+      * @param receiver Address to which tokens are being transferred.
+      */
+     error ERC20InvalidReceiver(address receiver);
 
     // /**
     //  * @dev Indicates a failure with the `spender`’s `allowance`. Used in transfers.
