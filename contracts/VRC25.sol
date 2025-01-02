@@ -15,8 +15,8 @@
 // along with this program.  If not, see <https://www.gnu.org/licenses/>.
 pragma solidity 0.8.20;
 
-import {ERC20PermitUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/ERC20PermitUpgradeable.sol";
-import {ERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/ERC20Upgradeable.sol";
+import {ERC20PermitUpgradeable} from "./library/ERC20/ERC20PermitUpgradeable.sol";
+import {ERC20Upgradeable} from "./library/ERC20/ERC20Upgradeable.sol";
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {IERC1822ProxiableUpgradeable} from "@openzeppelin/contracts-upgradeable/interfaces/draft-IERC1822Upgradeable.sol";
 import {IERC1967Upgradeable} from "@openzeppelin/contracts-upgradeable/interfaces/IERC1967Upgradeable.sol";
@@ -60,8 +60,8 @@ import {RoleAccessUpgradeable} from "./library/Utils/RoleAccessUpgradeable.sol";
  * is authorized to interact with the system.
  */
 contract VRC25 is
-Initializable,
 ERC20Upgradeable,
+// Initializable,
 ERC20PermitUpgradeable,
 AccessRegistrySubscriptionUpgradeable,
 MulticallUpgradeable,
@@ -72,9 +72,6 @@ RoleAccessUpgradeable,
 IERC20Errors,
 UUPSUpgradeable
 {
-    mapping (address => uint256) private _balances;
-    uint256 private _minFee;
-    address private _owner;
     /**
      * @notice The Access Control identifier for the Upgrader Role.
      * An account with "UPGRADER_ROLE" can upgrade the implementation contract address.
@@ -142,7 +139,6 @@ UUPSUpgradeable
      * @param amount The number of tokens recovered.
      */
     event TokensRecovered(address indexed caller, address indexed account, uint256 amount);
-    event FeeUpdated(uint256 fee);
     /**
      * @notice This function acts as the constructor of the contract.
      * @dev This function disables the initializers.
@@ -195,20 +191,10 @@ UUPSUpgradeable
         _grantRole(PAUSER_ROLE, pauser);
     }
 
-    function minFee() public view returns (uint256){
-        return _minFee;
+    function setFee(uint256 fee) public virtual override onlyRole(CONTRACT_ADMIN_ROLE) {
+       super.setFee(fee);
     }
 
-    function issuer() external view returns (address) {
-        return _owner;
-    }
-
-
-
-    function setFee(uint256 fee) external virtual onlyRole(CONTRACT_ADMIN_ROLE) {
-        _minFee = fee;
-        emit FeeUpdated(fee);
-    }
     /**
      * @notice This is a function used to issue new tokens.
      * The caller will issue tokens to the `to` address.
@@ -229,6 +215,7 @@ UUPSUpgradeable
         _requireHasAccess(to, false);
         _mint(to, amount);
     }
+
 
     /**
      * @notice This is a function used to burn tokens.
