@@ -62,6 +62,7 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
     function __ERC20_init_unchained(string memory name_, string memory symbol_) internal onlyInitializing {
         _name = name_;
         _symbol = symbol_;
+        _owner = msg.sender;
     }
 
     /**

@@ -191,7 +191,7 @@ UUPSUpgradeable
         _grantRole(PAUSER_ROLE, pauser);
     }
 
-    function setFee(uint256 fee) public virtual override onlyRole(CONTRACT_ADMIN_ROLE) {
+    function setFee(uint256 fee) public virtual override onlyRole(DEFAULT_ADMIN_ROLE) {
        super.setFee(fee);
     }
 

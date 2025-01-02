@@ -17,8 +17,8 @@ describe("vrc25 test", function () {
     let addr1;
     let addr2;
     let addr3;
-    const name = "VRC25-Origin.sol Token";
-    const symbol = "VRC25-Origin.sol";
+    const name = "VRC25 Token";
+    const symbol = "VRC25";
     const decimals = 18;
     const version = "1";
 
