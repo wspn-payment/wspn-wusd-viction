@@ -139,14 +139,6 @@ UUPSUpgradeable
      * @param amount The number of tokens recovered.
      */
     event TokensRecovered(address indexed caller, address indexed account, uint256 amount);
-    /**
-     * @notice This function acts as the constructor of the contract.
-     * @dev This function disables the initializers.
-     */
-    /// @custom:oz-upgrades-unsafe-allow constructor
-    constructor() {
-        _disableInitializers();
-    }
 
     /**
      * @notice This function configures the ERC20F contract with the initial state and granting
