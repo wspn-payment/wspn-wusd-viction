@@ -352,51 +352,6 @@ UUPSUpgradeable
     }
 
     /**
-     * @notice This function increases the allowance of the `spender` by `addedValue`. This means that the caller is
-     * delegating the `spender` to spend more funds than previously allowed. The resultant allowance will be a sum of
-     * previous allowance and the `addedValue`.
-     *
-     * @dev Calling Conditions:
-     *
-     * - {ERC20F} is not paused.
-     * - The `spender` must be a non-zero address. (checked internally by {ERC20Upgradeable}.{_approve})
-     *
-     * This function emits an {Approval} event as part of {ERC20Upgradeable._approve}.
-     *
-     * @param spender The spender's address.
-     * @param addedValue The amount by which allowance is increased.
-     * @return True if successful.
-     */
-    function increaseAllowance(address spender, uint256 addedValue) public virtual override whenNotPaused returns (bool) {
-        address owner = _msgSender();
-        _approve(owner, spender, allowance(owner, spender) + addedValue);
-        return true;
-    }
-
-    /**
-     * @notice This function decrease the allowance of the `spender` by `subtractedValue`. The new allowance will be the
-     * difference of previous amount and `subtractedValue`.
-     *
-     * @dev Calling Conditions:
-     *
-     * - {ERC20F} is not paused.
-     * - The `spender` must be a non-zero address. (checked internally by {ERC20Upgradeable}.{_approve})
-     * - Allowance to any spender cannot assume a negative value. The request is only processed if the requested
-     * decrease is less than the current allowance. (checked internally by {ERC20Upgradeable.decreaseAllowance})
-     *
-     * This function emits an {Approval} event as part of {ERC20Upgradeable._approve}.
-     *
-     * @param spender The spender's address.
-     * @param subtractedValue The Amount by which allowance is decreased.
-     * @return True if successful.
-     */
-    function decreaseAllowance(
-        address spender,
-        uint256 subtractedValue
-    ) public virtual override whenNotPaused returns (bool) {
-    }
-
-    /**
      * @notice This is a function used to transfer tokens from the sender to
      * the `to` address.
      *
