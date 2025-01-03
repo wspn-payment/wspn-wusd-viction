@@ -3,6 +3,7 @@
 
 pragma solidity ^0.8.0;
 
+import "./ERC20Param.sol";
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
@@ -36,10 +37,7 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
  * functions have been added to mitigate the well-known issues around setting
  * allowances. See {IERC20-approve}.
  */
-contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeable, IERC20MetadataUpgradeable {
-    mapping(address => uint256) private _balances;
-    uint256 private _minFee;
-    address private _owner;
+contract ERC20Upgradeable is ERC20Param, Initializable, ContextUpgradeable, IERC20Upgradeable, IERC20MetadataUpgradeable {
 
     mapping(address => mapping(address => uint256)) private _allowances;
 
@@ -48,7 +46,6 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
     string private _name;
     string private _symbol;
 
-    event FeeUpdated(uint256 fee);
     /**
      * @dev Sets the values for {name} and {symbol}.
      *
@@ -62,7 +59,6 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
     function __ERC20_init_unchained(string memory name_, string memory symbol_) internal onlyInitializing {
         _name = name_;
         _symbol = symbol_;
-        _owner = msg.sender;
     }
 
     /**
@@ -78,6 +74,10 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
      */
     function symbol() public view virtual override returns (string memory) {
         return _symbol;
+    }
+
+    function balanceOf(address account) public view virtual override returns (uint256) {
+        return super.getBalance(account);
     }
 
     /**
@@ -102,13 +102,6 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
      */
     function totalSupply() public view virtual override returns (uint256) {
         return _totalSupply;
-    }
-
-    /**
-     * @dev See {IERC20-balanceOf}.
-     */
-    function balanceOf(address account) public view virtual override returns (uint256) {
-        return _balances[account];
     }
 
     /**
@@ -146,11 +139,6 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
         address owner = _msgSender();
         _approve(owner, spender, amount);
         return true;
-    }
-
-    function setFee(uint256 fee) public virtual {
-        _minFee = fee;
-        emit FeeUpdated(fee);
     }
 
     /**
@@ -219,13 +207,6 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
         return true;
     }
 
-    function minFee() public view returns (uint256){
-        return _minFee;
-    }
-
-    function issuer() external view returns (address) {
-        return _owner;
-    }
 
     /**
      * @dev Moves `amount` of tokens from `from` to `to`.
@@ -247,13 +228,13 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
 
         _beforeTokenTransfer(from, to, amount);
 
-        uint256 fromBalance = _balances[from];
+        uint256 fromBalance = getBalance(from);
         require(fromBalance >= amount, "ERC20: transfer amount exceeds balance");
         unchecked {
-            _balances[from] = fromBalance - amount;
+            super.settingBalance(from, fromBalance - amount);
         // Overflow not possible: the sum of all balances is capped by totalSupply, and the sum is preserved by
         // decrementing then incrementing.
-            _balances[to] += amount;
+            super.settingBalance(to, getBalance(to) + amount);
         }
 
         emit Transfer(from, to, amount);
@@ -278,7 +259,7 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
         _totalSupply += amount;
         unchecked {
         // Overflow not possible: balance + amount is at most totalSupply + amount, which is checked above.
-            _balances[account] += amount;
+            settingBalance(account, getBalance(account) + amount);
         }
         emit Transfer(address(0), account, amount);
 
@@ -301,10 +282,11 @@ contract ERC20Upgradeable is Initializable, ContextUpgradeable, IERC20Upgradeabl
 
         _beforeTokenTransfer(account, address(0), amount);
 
-        uint256 accountBalance = _balances[account];
+        uint256 accountBalance = getBalance(account);
         require(accountBalance >= amount, "ERC20: burn amount exceeds balance");
         unchecked {
-            _balances[account] = accountBalance - amount;
+        // _balances[account] = accountBalance - amount;
+            settingBalance(account, accountBalance - amount);
         // Overflow not possible: amount <= accountBalance <= totalSupply.
             _totalSupply -= amount;
         }
