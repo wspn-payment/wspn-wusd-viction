@@ -4,6 +4,7 @@
 pragma solidity ^0.8.0;
 
 import "./ERC20Param.sol";
+import "../../interface/IVRC25.sol";
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
 import "@openzeppelin/contracts-upgradeable/utils/ContextUpgradeable.sol";
@@ -37,7 +38,7 @@ import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Ini
  * functions have been added to mitigate the well-known issues around setting
  * allowances. See {IERC20-approve}.
  */
-contract ERC20Upgradeable is ERC20Param, Initializable, ContextUpgradeable, IERC20Upgradeable, IERC20MetadataUpgradeable {
+contract ERC20Upgradeable is ERC20Param, Initializable, ContextUpgradeable, IVRC25 {
 
     mapping(address => mapping(address => uint256)) private _allowances;
 
@@ -64,7 +65,7 @@ contract ERC20Upgradeable is ERC20Param, Initializable, ContextUpgradeable, IERC
     /**
      * @dev Returns the name of the token.
      */
-    function name() public view virtual override returns (string memory) {
+    function name() public view virtual returns (string memory) {
         return _name;
     }
 
@@ -72,12 +73,20 @@ contract ERC20Upgradeable is ERC20Param, Initializable, ContextUpgradeable, IERC
      * @dev Returns the symbol of the token, usually a shorter version of the
      * name.
      */
-    function symbol() public view virtual override returns (string memory) {
+    function symbol() public view virtual returns (string memory) {
         return _symbol;
     }
 
-    function balanceOf(address account) public view virtual override returns (uint256) {
+    function balanceOf(address account) public view virtual  returns (uint256) {
         return super.getBalance(account);
+    }
+
+    function issuer() external view returns (address){
+        return super.getIssuer();
+    }
+
+    function estimateFee(uint256 value) external virtual view returns (uint256){
+
     }
 
     /**

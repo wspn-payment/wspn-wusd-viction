@@ -3,11 +3,10 @@ const {ethers} = require("hardhat");
 async function main() {
     const [deployer] = await ethers.getSigners();
 
-    const gasLimit = 100_000_000;
+    const gasLimit = 20000000;
     console.log("Deploying contracts with the account:", deployer.address);
-
-    const VRC25 = await ethers.getContractFactory("VRC25",{ gasLimit });
-    const vrc25 = await VRC25.deploy();
+    const vrc25 = await ethers.deployContract("VRC26",{ gasLimit });
+    // const vrc25 = await VRC25.deploy();
     await vrc25.waitForDeployment();
 
     console.log("Contract deployed to:", vrc25.target);

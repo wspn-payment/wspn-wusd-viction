@@ -26,7 +26,7 @@ contract ERC20Param {
         return _minFee;
     }
 
-    function issuer() public view returns (address) {
+    function getIssuer() public view returns (address) {
         return _owner;
     }
 

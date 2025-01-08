@@ -20,12 +20,7 @@ import {ERC20Upgradeable} from "./library/ERC20/ERC20Upgradeable.sol";
 import {IERC20Upgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/IERC20Upgradeable.sol";
 import {IERC1822ProxiableUpgradeable} from "@openzeppelin/contracts-upgradeable/interfaces/draft-IERC1822Upgradeable.sol";
 import {IERC1967Upgradeable} from "@openzeppelin/contracts-upgradeable/interfaces/IERC1967Upgradeable.sol";
-import {IERC20MetadataUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20MetadataUpgradeable.sol";
-import {IERC5267Upgradeable} from "@openzeppelin/contracts-upgradeable/interfaces/IERC5267Upgradeable.sol";
-import {IERC20PermitUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20PermitUpgradeable.sol";
-import {Initializable} from "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import {MulticallUpgradeable} from "@openzeppelin/contracts-upgradeable/utils/MulticallUpgradeable.sol";
-import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {IERC20Errors} from "./library/Errors/interface/IERC20Errors.sol";
 
 import {LibErrors} from "./library/Errors/LibErrors.sol";
@@ -59,7 +54,7 @@ import {RoleAccessUpgradeable} from "./library/Utils/RoleAccessUpgradeable.sol";
  * The VRC25.sol Token contract can utilize an Access Registry contract to retrieve information on whether an account
  * is authorized to interact with the system.
  */
-contract VRC25 is
+contract VRC26 is
 ERC20Upgradeable,
 // Initializable,
 ERC20PermitUpgradeable,
@@ -69,8 +64,7 @@ SalvageUpgradeable,
 ContractUriUpgradeable,
 PauseUpgradeable,
 RoleAccessUpgradeable,
-IERC20Errors,
-UUPSUpgradeable
+IERC20Errors
 {
     /**
      * @notice The Access Control identifier for the Upgrader Role.
@@ -168,10 +162,8 @@ UUPSUpgradeable
             revert LibErrors.InvalidAddress();
         }
 
-        __UUPSUpgradeable_init();
         __ERC20_init(_name, _symbol);
         __ERC20Permit_init(_name);
-        __Multicall_init();
         __AccessRegistrySubscription_init(address(0));
         __Salvage_init();
         __ContractUri_init("");
@@ -395,11 +387,8 @@ UUPSUpgradeable
     function supportsInterface(bytes4 interfaceId) public view virtual override returns (bool) {
         return
             interfaceId == type(IERC20Upgradeable).interfaceId ||
-            interfaceId == type(IERC20MetadataUpgradeable).interfaceId ||
             interfaceId == type(IERC1967Upgradeable).interfaceId ||
             interfaceId == type(IERC1822ProxiableUpgradeable).interfaceId ||
-            interfaceId == type(IERC20PermitUpgradeable).interfaceId ||
-            interfaceId == type(IERC5267Upgradeable).interfaceId ||
             super.supportsInterface(interfaceId);
     }
 
@@ -420,20 +409,6 @@ UUPSUpgradeable
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal override virtual whenNotPaused {
 
     }
-
-    /**
-     * @notice This is a function that applies any validations required to allow upgrade operations.
-     *
-     * @dev Reverts when the caller does not have the "UPGRADER_ROLE".
-     *
-     * Calling Conditions:
-     *
-     * - Only the "UPGRADER_ROLE" can execute.
-     *
-     * @param newImplementation The address of the new logic contract.
-     */
-    /* solhint-disable no-empty-blocks */
-    function _authorizeUpgrade(address newImplementation) internal virtual override onlyRole(UPGRADER_ROLE) {}
 
     /**
      * @notice This is a function that applies any validations required to allow salvage operations (like salvageERC20).
