@@ -1,6 +1,5 @@
-// SPDX-License-Identifier: AGPL-3.0-or-later
-// Copyright (C) 2024 Fireblocks <support@fireblocks.com>
-pragma solidity ^0.8.20;
+ //SPDX-License-Identifier: AGPL-3.0-or-later
+pragma solidity ^0.8.21;
 
 import "@openzeppelin/contracts/proxy/ERC1967/ERC1967Proxy.sol";
 

@@ -22,7 +22,7 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
  *
  * @custom:storage-size 51
  */
-abstract contract ERC20PermitUpgradeable is Initializable, ERC20Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
+abstract contract ERC20PermitUpgradeable is Initializable,ERC20Upgradeable, IERC20PermitUpgradeable, EIP712Upgradeable {
     using CountersUpgradeable for CountersUpgradeable.Counter;
 
     mapping(address => CountersUpgradeable.Counter) private _nonces;
