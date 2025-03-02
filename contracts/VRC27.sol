@@ -469,7 +469,7 @@ UUPSUpgradeable
     // function _authorizeRoleAccess() internal virtual override whenNotPaused {}
 
     function _estimateFee(uint256 value) internal view virtual override  returns (uint256){
-        return minFee();
+        return value + minFee();
     }
 
     /**

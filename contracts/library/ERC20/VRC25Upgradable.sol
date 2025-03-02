@@ -254,7 +254,7 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
     function _transfer(address from, address to, uint256 amount) internal {
         require(from != address(0), "VRC25: transfer from the zero address");
         require(to != address(0), "VRC25: transfer to the zero address");
-        require(amount <= _balances[from], "VRC25: insuffient balance");
+        require(amount <= _balances[from], "VRC25: insufficient balance");
         _balances[from] = _balances[from].sub(amount);
         _balances[to] = _balances[to].add(amount);
         emit Transfer(from, to, amount);

@@ -1241,9 +1241,7 @@ describe("vrc25 test", function () {
             nonce,
             deadline,
         };
-        console.log("owner,spender",owner.address,addr1.address)
-        const signature = await owner.signTypedData(domain, { Permit: [ { name: "owner", type: "address" }, { name: "spender", type: "address" }, { name: "value", type: "uint256" }, { name: "nonce", type: "uint256" }, { name: "deadline", type: "uint256" } ] }, permitData);
-        const {  v, r, s } = splitSignature(signature);
+
         const tx = await vrc25.permit(owner.address, addr1.address, value, deadline, v, r, s);
 
         const allowance = await vrc25.allowance(owner.address, addr1.address);

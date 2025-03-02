@@ -35,7 +35,16 @@ module.exports = {
       accounts: ['456fdac5fb249c33c28574945c3c3ef5a0403dcb0e175dba42ebbb801d9981f5'],
       gas: 6000000, // 设置更高的 Gas 限制
       gasPrice: 250000000, // 设置 Gas 价格（可选）
+    },
+    'sepolia-eth':{
+      url: 'https://ethereum-sepolia-rpc.publicnode.com',
+      accounts: ['456fdac5fb249c33c28574945c3c3ef5a0403dcb0e175dba42ebbb801d9981f5'],
+      gas: 6000000, // 设置更高的 Gas 限制
+      gasPrice: 250000000, // 设置 Gas 价格（可选）
     }
+  },
+  deployments: {
+    "0x2cB48366f21c05f228710F4e1BDB62E8d1087325": { contract: "VRC25" }
   }
 
 };

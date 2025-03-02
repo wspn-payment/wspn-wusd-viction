@@ -2,13 +2,10 @@ const {ethers} = require("hardhat");
 
 async function main() {
     const [deployer] = await ethers.getSigners();
-    console.log("Init the contract using the account",deployer.address);
+    console.log("Init the contract using the account", deployer.address);
 
-    // 合约地址
-    // const contractAddress = '0xdB1E5230e016b83b03C79D7e10F7d9D000E4569a';
-    // const contractAddress = '0x9AD16B6D3E401b8dF25C985f9bEbb490dB8aFE78';
-    // const contractAddress = '0x85D3720826769AbEa6BC0C8c80159e196A8aE8D3';
-    const contractAddress = '0x654672b55560968C87c232679a09f4E435c98bF2';
+    // const contractAddress = '0x654672b55560968C87c232679a09f4E435c98bF2';
+    const contractAddress = '0x36AA91C120fC3E354EF1c9452cA7584eC7884D65';
 
     const ABI = [
         {
@@ -1104,80 +1101,17 @@ async function main() {
         }
     ]
 
-    const gasLimit = 25000000;
     const contract = new ethers.Contract(contractAddress, ABI, deployer);
-    //初始化合约
-    const name = "Worldwide USD";
-    const symbol = "WUSD";
-    const defaultAdmin = "0x702b4B92b74ac470d1eeb91106A2e7Be73F8b92b"; // 设置默认管理员地址
-    const minter = "0x1a41b5922E926Cca1EAa8afAC55bdDce40FDBe61"; // 设置铸币人地址
-    const pauser = "0xa2fAA105883af5CbEF6F95826Db420E5AB5594fC"; // 设置暂停人地址
-    const decimal = 18;
-    //
-    const tx1 = await contract.initialize(name, symbol, defaultAdmin, minter, pauser, decimal);
-    await tx1.wait();
-    console.log("Contract initialized")
 
-    const name1 = await contract.name();
-    const symbol1 = await contract.symbol();
-    console.log(name1)
-    console.log(symbol1)
-
-    // 获取角色
-    // const CONTRACT_ADMIN_ROLE = await contract.CONTRACT_ADMIN_ROLE();
-    // const MINTER_ROLE = await contract.MINTER_ROLE();
-    // const PAUSER_ROLE = await contract.PAUSER_ROLE();
-    // const UPGRADER_ROLE = await contract.UPGRADER_ROLE();
-    // const DEFAULT_ADMIN_ROLE = await contract.DEFAULT_ADMIN_ROLE();
-    //
-    // console.log(CONTRACT_ADMIN_ROLE)
-    // console.log(MINTER_ROLE)
-    // console.log(PAUSER_ROLE)
-    // console.log(UPGRADER_ROLE)
-    // console.log(DEFAULT_ADMIN_ROLE)
-    // //
-    // const hasMintRole = await contract.hasRole("0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6","0x1a41b5922E926Cca1EAa8afAC55bdDce40FDBe61");
-    // console.log("hasMintRole",hasMintRole);
-    //
-    // const hasPaushRole = await contract.hasRole("0x65d7a28e3265b37a6474929f336521b332c1681b933f6cb9f3376673440d862a","0xa2fAA105883af5CbEF6F95826Db420E5AB5594fC");
-    // console.log("hasPaushRole",hasPaushRole)
-    // //
-    // const tx1 = await contract.grantRole("0x189ab7a9244df0848122154315af71fe140f3db0fe014031783b0946b8c9d2e3","0x4a48240E0062dfE01369840D89804FE45Eb8a41E");
-    // await tx1.wait();
-    // console.log("upgrader_role has granted!")
-    // const hasUpgraderRole = await contract.hasRole("0x189ab7a9244df0848122154315af71fe140f3db0fe014031783b0946b8c9d2e3","0x4a48240E0062dfE01369840D89804FE45Eb8a41E");
-    // console.log("hasUpgraderRole",hasUpgraderRole)
-    //
-    // const tx2 = await contract.grantRole("0x2ce8d04a9c35987429af538825cd2438cc5c5bb5dc427955f84daaa3ea105016","0x4a48240E0062dfE01369840D89804FE45Eb8a41E");
-    // await tx2.wait();
-    // console.log("contract admin has granted!")
-    // const hasAdminRole = await contract.hasRole("0x2ce8d04a9c35987429af538825cd2438cc5c5bb5dc427955f84daaa3ea105016","0x4a48240E0062dfE01369840D89804FE45Eb8a41E");
-    // console.log("hasAdminRole",hasAdminRole)
-    //
-    // const tx3 = await contract.grantRole("0x0000000000000000000000000000000000000000000000000000000000000000","0x731Efdc933464ed81Bf3Ea961e9fDAdC62e83bd1");
-    // await tx3.wait();
-    // console.log("contract default admin has granted!")
-    // const hasDefaultAdminRole = await contract.hasRole("0x0000000000000000000000000000000000000000000000000000000000000000","0x731Efdc933464ed81Bf3Ea961e9fDAdC62e83bd1");
-    // console.log("hasDefaultAdminRole",hasDefaultAdminRole)
-    //
-    // const tx4 = await contract.grantRole("0x3c11d16cbaffd01df69ce1c404f6340ee057498f5f00246190ea54220576a848","0xdD74F8Ba3AD0CF39AE9EaDE98232dfAb596362Ef");
-    // await tx4.wait();
-    // console.log("contract default admin has granted!")
-    // const hasBurnRole = await contract.hasRole("0x3c11d16cbaffd01df69ce1c404f6340ee057498f5f00246190ea54220576a848","0xdD74F8Ba3AD0CF39AE9EaDE98232dfAb596362Ef");
-    // console.log("hasBurnRole",hasBurnRole)
+    const balance = await contract.estimateFee(500n);
+    console.log(balance)
+    const decimal = await contract.decimals();
+    console.log(decimal)
+    const name = await contract.name();
+    console.log(name)
 
 
-    // const hasDefaultAdmin = await contract.hasRole("0x0000000000000000000000000000000000000000000000000000000000000000","0x702b4B92b74ac470d1eeb91106A2e7Be73F8b92b");
-    // console.log("hasDefaultAdmin",hasDefaultAdmin)
-    // const tx5 = await contract.renounceRole("0x0000000000000000000000000000000000000000000000000000000000000000","0x702b4B92b74ac470d1eeb91106A2e7Be73F8b92b");
-    // await tx5.wait();
-    // console.log("the defaultAdmin of 0x702b4B92b74ac470d1eeb91106A2e7Be73F8b92b has renounceRole",tx5)
-    //
-    // const hasDefaultAdmin2 = await contract.hasRole("0x0000000000000000000000000000000000000000000000000000000000000000","0x702b4B92b74ac470d1eeb91106A2e7Be73F8b92b");
-    // console.log("hasDefaultAdmin",hasDefaultAdmin2)
 }
-
-
 
 
 // 调用 main 函数并处理可能的错误
