@@ -8,7 +8,12 @@ async function main() {
     console.log("Upgrading contract...");
 
     const gasLimit = 50000000;
+    const vrc25 = await ethers.deployContract("VRC25",{ gasLimit });
+    await vrc25.waitForDeployment();
+    console.log("logic address",vrc25.target)
 
+
+    // await upgrades.forceImport(proxyAddress, NewContract);
     // 升级合约
     const upgraded = await upgrades.upgradeProxy(proxyAddress, NewContract, {gasLimit});
 
