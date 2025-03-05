@@ -25,7 +25,6 @@ import {IERC20Errors} from "./library/Errors/interface/IERC20Errors.sol";
 import {ECDSA} from "./library/Utils/ECDSA.sol";
 
 import {LibErrors} from "./library/Errors/LibErrors.sol";
-import {SalvageUpgradeable} from "./library/Utils/SalvageUpgradeable.sol";
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 
 /**
@@ -57,7 +56,6 @@ VRC25Upgradable,
 VRC25Permit,
 PausableUpgradeable,
 AccessControlUpgradeable,
-SalvageUpgradeable,
 IERC20Errors,
 UUPSUpgradeable
 {
@@ -160,8 +158,6 @@ UUPSUpgradeable
         __VRC25_init(_name, _symbol,decimal);
         __Pausable_init();
         initPermit();
-//        __Salvage_init();
-
 
         _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
         _grantRole(MINTER_ROLE, minter);
@@ -395,31 +391,6 @@ UUPSUpgradeable
     }
 
     function _authorizeUpgrade(address newImplementation) internal virtual override onlyRole(UPGRADER_ROLE) {}
-    /**
-     * @notice This is a function that applies any validations required to allow salvage operations (like salvageERC20).
-     *
-     * @dev Reverts when the caller does not have the "SALVAGE_ROLE".
-     *
-     * Calling Conditions:
-     *
-     * - Only the "SALVAGE_ROLE" can execute.
-     * - {ERC20F} is not paused.
-     */
-    /* solhint-disable no-empty-blocks */
-    function _authorizeSalvageERC20() internal virtual override whenNotPaused onlyRole(SALVAGE_ROLE) {}
-
-    /**
-     * @notice This is a function that applies any validations required to allow salvage operations (like salvageGas).
-     *
-     * @dev Reverts when the caller does not have the "SALVAGE_ROLE".
-     *
-     * Calling Conditions:
-     *
-     * - Only the "SALVAGE_ROLE" can execute.
-     * - {ERC20F} is not paused.
-     */
-    /* solhint-disable no-empty-blocks */
-    function _authorizeSalvageGas() internal virtual override whenNotPaused onlyRole(SALVAGE_ROLE) {}
 
     /**
      * @notice This is a function that applies any validations required to allow Contract Uri updates.
