@@ -22,8 +22,10 @@ import {IERC20PermitUpgradeable} from "@openzeppelin/contracts-upgradeable/token
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import {IERC20Errors} from "./library/Errors/interface/IERC20Errors.sol";
+import {ECDSA} from "./library/Utils/ECDSA.sol";
 
 import {LibErrors} from "./library/Errors/LibErrors.sol";
+import {SalvageUpgradeable} from "./library/Utils/SalvageUpgradeable.sol";
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
 
 /**
@@ -55,6 +57,7 @@ VRC25Upgradable,
 VRC25Permit,
 PausableUpgradeable,
 AccessControlUpgradeable,
+SalvageUpgradeable,
 IERC20Errors,
 UUPSUpgradeable
 {
@@ -114,8 +117,6 @@ UUPSUpgradeable
      */
     bytes32 public constant SALVAGE_ROLE = keccak256("SALVAGE_ROLE");
 
-    /// Events
-
     /**
      * @notice This event is logged when the funds are recovered from an address that is not allowed
      * to participate in the system.
@@ -159,6 +160,8 @@ UUPSUpgradeable
         __VRC25_init(_name, _symbol,decimal);
         __Pausable_init();
         initPermit();
+//        __Salvage_init();
+
 
         _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
         _grantRole(MINTER_ROLE, minter);
@@ -280,7 +283,7 @@ UUPSUpgradeable
         bytes32 r,
         bytes32 s
     ) public virtual override whenNotPaused {
-        super.permit(owner, spender, value, deadline, v, r, s);
+        super.permit(owner ,spender,value,deadline,v,r,s);
     }
 
     /**
@@ -403,7 +406,7 @@ UUPSUpgradeable
      * - {ERC20F} is not paused.
      */
     /* solhint-disable no-empty-blocks */
-//    function _authorizeSalvageERC20() internal virtual override whenNotPaused onlyRole(SALVAGE_ROLE) {}
+    function _authorizeSalvageERC20() internal virtual override whenNotPaused onlyRole(SALVAGE_ROLE) {}
 
     /**
      * @notice This is a function that applies any validations required to allow salvage operations (like salvageGas).
@@ -416,7 +419,7 @@ UUPSUpgradeable
      * - {ERC20F} is not paused.
      */
     /* solhint-disable no-empty-blocks */
-//    function _authorizeSalvageGas() internal virtual override whenNotPaused onlyRole(SALVAGE_ROLE) {}
+    function _authorizeSalvageGas() internal virtual override whenNotPaused onlyRole(SALVAGE_ROLE) {}
 
     /**
      * @notice This is a function that applies any validations required to allow Contract Uri updates.
@@ -469,7 +472,7 @@ UUPSUpgradeable
     // function _authorizeRoleAccess() internal virtual override whenNotPaused {}
 
     function _estimateFee(uint256 value) internal view virtual override  returns (uint256){
-        return value + minFee();
+        return minFee();
     }
 
     /**
@@ -482,4 +485,5 @@ UUPSUpgradeable
     function _requireHasAccess(address account, bool isSender) internal view virtual {
 
     }
+
 }

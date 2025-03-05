@@ -27,7 +27,7 @@ import {LibErrors} from "../Errors/LibErrors.sol";
  * @author Fireblocks
  * @dev This abstract contract provides internal contract logic for rescuing tokens and ETH.
  */
-abstract contract SalvageUpgradeable is Initializable, ContextUpgradeable {
+abstract contract SalvageUpgradeable is ContextUpgradeable {
     using SafeERC20Upgradeable for IERC20Upgradeable;
 
     /// Events
@@ -91,17 +91,17 @@ abstract contract SalvageUpgradeable is Initializable, ContextUpgradeable {
 	 *
 	 * @param amount The amount to be salvaged.
 	 */
-    function salvageGas(uint256 amount) external virtual {
-        if (amount == 0) {
-            revert LibErrors.ZeroAmount();
-        }
-        _authorizeSalvageGas();
-        emit GasTokenSalvaged(_msgSender(), amount);
-        (bool succeed, ) = _msgSender().call{value: amount}("");
-        if (!succeed) {
-            revert LibErrors.SalvageGasFailed();
-        }
-    }
+//    function salvageGas(uint256 amount) external virtual {
+//        if (amount == 0) {
+//            revert LibErrors.ZeroAmount();
+//        }
+//        _authorizeSalvageGas();
+//        emit GasTokenSalvaged(_msgSender(), amount);
+//        (bool succeed, ) = _msgSender().call{value: amount}("");
+//        if (!succeed) {
+//            revert LibErrors.SalvageGasFailed();
+//        }
+//    }
 
     /**
      * @notice This function is designed to be overridden in inheriting contracts.

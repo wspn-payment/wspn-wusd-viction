@@ -1,19 +1,14 @@
 // SPDX-License-Identifier: MIT
-pragma solidity >=0.7.6;
+pragma solidity ^0.8.20;
 
 import "../../interface/IVRC25.sol";
 import "../../interface/IERC165.sol";
-
-import "../Utils/Address.sol";
-import "../Utils/SafeMath.sol";
 
 /**
  * @title Base VRC25 implementation
  * @notice VRC25Upgradable implementation for opt-in to gas sponsor program. This replace Ownable from OpenZeppelin as well.
  */
 abstract contract VRC25Upgradable is IVRC25, IERC165 {
-    using Address for address;
-    using SafeMath for uint256;
 
     // The order of _balances, _minFeem, _issuer must not be changed to pass validation of gas sponsor application
     mapping (address => uint256) private _balances;
@@ -34,9 +29,9 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
     /**
      * @notice Init VRC25 contract, MUST BE call only 1 one time when init smart contract.
      */
-    function __VRC25_init(string memory name, string memory symbol, uint8 decimals_) internal {
-        _name = name;
-        _symbol = symbol;
+    function __VRC25_init(string memory name_, string memory symbol_, uint8 decimals_) internal {
+        _name = name_;
+        _symbol = symbol_;
         _decimals = decimals_;
         _owner = msg.sender;
     }
@@ -81,11 +76,11 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
 
     /**
      * @notice Returns the amount of tokens owned by `account`.
-     * @param owner The address to query the balance of.
+     * @param owner_ The address to query the balance of.
      * @return An uint256 representing the amount owned by the passed address.
      */
-    function balanceOf(address owner) public view override returns (uint256) {
-        return _balances[owner];
+    function balanceOf(address owner_) public view override returns (uint256) {
+        return _balances[owner_];
     }
 
     /**
@@ -95,8 +90,8 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
      *
      * This value changes when {approve} or {transferFrom} are called.
      */
-    function allowance(address owner,address spender) public view override returns (uint256){
-        return _allowances[owner][spender];
+    function allowance(address owner_,address spender) public view override returns (uint256){
+        return _allowances[owner_][spender];
     }
 
     /**
@@ -124,7 +119,7 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
      * @notice Calculate fee needed to transfer `amount` of tokens.
      */
     function estimateFee(uint256 value) public view override returns (uint256) {
-        if (address(msg.sender).isContract()) {
+        if (tx.origin!=msg.sender) {
             return 0;
         } else {
             return _estimateFee(value);
@@ -177,9 +172,9 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
      */
     function transferFrom(address sender, address recipient, uint256 amount) public virtual override returns (bool) {
         uint256 fee = estimateFee(amount);
-        require(_allowances[sender][msg.sender] >= amount.add(fee), "VRC25: amount exeeds allowance");
+        require(_allowances[sender][msg.sender] >= amount+(fee), "VRC25: amount exeeds allowance");
 
-        _allowances[sender][msg.sender] = _allowances[sender][msg.sender].sub(amount).sub(fee);
+        _allowances[sender][msg.sender] = _allowances[sender][msg.sender]-(amount)-(fee);
         _transfer(sender, recipient, amount);
         _chargeFeeFrom(sender, recipient, fee);
         return true;
@@ -255,23 +250,23 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
         require(from != address(0), "VRC25: transfer from the zero address");
         require(to != address(0), "VRC25: transfer to the zero address");
         require(amount <= _balances[from], "VRC25: insufficient balance");
-        _balances[from] = _balances[from].sub(amount);
-        _balances[to] = _balances[to].add(amount);
+        _balances[from] = _balances[from]-(amount);
+        _balances[to] = _balances[to]-(amount);
         emit Transfer(from, to, amount);
     }
 
     /**
      * @dev Set allowance that spender can use from owner
-     * @param owner The address that authroize the allowance
+     * @param owner_ The address that authroize the allowance
      * @param spender The address that can spend the allowance
      * @param amount The amount that can be allowed
      */
-    function _approve(address owner, address spender, uint256 amount) internal {
-        require(owner != address(0), "VRC25: approve from the zero address");
+    function _approve(address owner_, address spender, uint256 amount) internal {
+        require(owner_ != address(0), "VRC25: approve from the zero address");
         require(spender != address(0), "VRC25: approve to the zero address");
 
-        _allowances[owner][spender] = amount;
-        emit Approval(owner, spender, amount);
+        _allowances[owner_][spender] = amount;
+        emit Approval(owner_, spender, amount);
     }
 
     /**
@@ -282,7 +277,7 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
      * @param amount The amount token as fee
      */
     function _chargeFeeFrom(address sender, address recipient, uint256 amount) internal {
-        if (address(msg.sender).isContract()) {
+        if (tx.origin!=msg.sender) {
             return;
         }
         if(amount > 0) {
@@ -299,8 +294,8 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
      */
     function _mint(address to, uint256 amount) internal {
         require(to != address(0), "VRC25: mint to the zero address");
-        _totalSupply = _totalSupply.add(amount);
-        _balances[to] = _balances[to].add(amount);
+        _totalSupply = _totalSupply+(amount);
+        _balances[to] = _balances[to]+(amount);
         emit Transfer(address(0), to, amount);
     }
 
@@ -314,8 +309,8 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
     function _burn(address from, uint256 amount) internal {
         require(from != address(0), "VRC25: burn from the zero address");
         require(amount <= _balances[from], "VRC25: insuffient balance");
-        _totalSupply = _totalSupply.sub(amount);
-        _balances[from] = _balances[from].sub(amount);
+        _totalSupply = _totalSupply-(amount);
+        _balances[from] = _balances[from]-(amount);
         emit Transfer(from, address(0), amount);
     }
 }

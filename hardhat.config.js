@@ -15,7 +15,7 @@ module.exports = {
     settings: {
       optimizer: {
         enabled: true,  // 启用优化器
-        runs: 5        // 设置优化器运行次数，这会影响字节码的大小
+        runs: 200        // 设置优化器运行次数，这会影响字节码的大小
       }
     },
   },
@@ -38,6 +38,12 @@ module.exports = {
     },
     'sepolia-eth':{
       url: 'https://ethereum-sepolia-rpc.publicnode.com',
+      accounts: ['456fdac5fb249c33c28574945c3c3ef5a0403dcb0e175dba42ebbb801d9981f5'],
+      gas: 6000000, // 设置更高的 Gas 限制
+      gasPrice: 250000000, // 设置 Gas 价格（可选）
+    },
+    'polygon':{
+      url: 'https://polygon-rpc.com',
       accounts: ['456fdac5fb249c33c28574945c3c3ef5a0403dcb0e175dba42ebbb801d9981f5'],
       gas: 6000000, // 设置更高的 Gas 限制
       gasPrice: 250000000, // 设置 Gas 价格（可选）
