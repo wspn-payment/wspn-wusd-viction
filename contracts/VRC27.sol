@@ -26,6 +26,7 @@ import {ECDSA} from "./library/Utils/ECDSA.sol";
 
 import {LibErrors} from "./library/Errors/LibErrors.sol";
 import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import {PauseUpgradeable} from "./library/Utils/PauseUpgradeable.sol";
 
 /**
  * @title VRC25
@@ -46,7 +47,6 @@ import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/
  *  - MINTER_ROLE
  *  - BURNER_ROLE
  *  - RECOVERY_ROLE
- *  - SALVAGE_ROLE
  *
  * The VRC25.sol Token contract can utilize an Access Registry contract to retrieve information on whether an account
  * is authorized to interact with the system.
@@ -54,7 +54,7 @@ import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/
 contract VRC25 is
 VRC25Upgradable,
 VRC25Permit,
-PausableUpgradeable,
+PauseUpgradeable,
 AccessControlUpgradeable,
 IERC20Errors,
 UUPSUpgradeable
@@ -108,14 +108,6 @@ UUPSUpgradeable
     bytes32 public constant RECOVERY_ROLE = keccak256("RECOVERY_ROLE");
 
     /**
-     * @notice The Access Control identifier for the Salvager Role.
-     * An account with "SALVAGE_ROLE" can salvage tokens and gas.
-     *
-     * @dev This constant holds the hash of the string "SALVAGE_ROLE".
-     */
-    bytes32 public constant SALVAGE_ROLE = keccak256("SALVAGE_ROLE");
-
-    /**
      * @notice This event is logged when the funds are recovered from an address that is not allowed
      * to participate in the system.
      *
@@ -156,7 +148,7 @@ UUPSUpgradeable
 
         __UUPSUpgradeable_init();
         __VRC25_init(_name, _symbol,decimal);
-        __Pausable_init();
+        __Pause_init();
         initPermit();
 
         _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
@@ -237,9 +229,9 @@ UUPSUpgradeable
      * With every new deployment, the version number will be incremented.
      * @return The version of the contract.
      */
-    function version() external view virtual returns (uint64) {
-        return uint64(super._getInitializedVersion());
-    }
+    // function version() external view virtual returns (uint64) {
+    //     return uint64(super._getInitializedVersion());
+    // }
 
     /**
      * @notice This is a function that allows an owner to provide off-chain permission for a specific `spender` to spend
@@ -386,24 +378,9 @@ UUPSUpgradeable
      * @param to The address that receives the transfer `amount`.
      * @param amount The number of tokens sent to the `to` address.
      */
-    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual whenNotPaused {
-
-    }
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override whenNotPaused {}
 
     function _authorizeUpgrade(address newImplementation) internal virtual override onlyRole(UPGRADER_ROLE) {}
-
-    /**
-     * @notice This is a function that applies any validations required to allow Contract Uri updates.
-     *
-     * @dev Reverts when the caller does not have the "CONTRACT_ADMIN_ROLE".
-     *
-     * Calling Conditions:
-     *
-     * - Only the "CONTRACT_ADMIN_ROLE" can execute.
-     * - {ERC20F} is not paused.
-     */
-    /* solhint-disable no-empty-blocks */
-//    function _authorizeContractUriUpdate() internal virtual override whenNotPaused onlyRole(CONTRACT_ADMIN_ROLE) {}
 
     /**
      * @notice This is a function that applies any validations required to allow Pause operations (like pause or unpause) to be executed.
@@ -415,7 +392,7 @@ UUPSUpgradeable
      * - Only the "PAUSER_ROLE" can execute.
      */
     /* solhint-disable no-empty-blocks */
-    // function _authorizePause() internal virtual override onlyRole(PAUSER_ROLE) {}
+    function _authorizePause() internal virtual override onlyRole(PAUSER_ROLE) {}
 
     /**
      * @notice This is a function that applies any validations required to allow Access Registry updates.

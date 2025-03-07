@@ -250,9 +250,15 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
         require(from != address(0), "VRC25: transfer from the zero address");
         require(to != address(0), "VRC25: transfer to the zero address");
         require(amount <= _balances[from], "VRC25: insufficient balance");
+        
+        _beforeTokenTransfer(from, to, amount);
+
         _balances[from] = _balances[from]-(amount);
-        _balances[to] = _balances[to]-(amount);
+        _balances[to] = _balances[to]+(amount);
         emit Transfer(from, to, amount);
+        
+        _afterTokenTransfer(from, to, amount);
+
     }
 
     /**
@@ -294,9 +300,12 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
      */
     function _mint(address to, uint256 amount) internal {
         require(to != address(0), "VRC25: mint to the zero address");
+        _beforeTokenTransfer(address(0), to, amount);
         _totalSupply = _totalSupply+(amount);
         _balances[to] = _balances[to]+(amount);
         emit Transfer(address(0), to, amount);
+
+        _afterTokenTransfer(address(0), to, amount);
     }
 
     /**
@@ -309,8 +318,44 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
     function _burn(address from, uint256 amount) internal {
         require(from != address(0), "VRC25: burn from the zero address");
         require(amount <= _balances[from], "VRC25: insuffient balance");
+        _beforeTokenTransfer(from, address(0), amount);
+
         _totalSupply = _totalSupply-(amount);
         _balances[from] = _balances[from]-(amount);
         emit Transfer(from, address(0), amount);
+
+        _afterTokenTransfer(from, address(0), amount);
     }
+
+        /**
+     * @dev Hook that is called before any transfer of tokens. This includes
+     * minting and burning.
+     *
+     * Calling conditions:
+     *
+     * - when `from` and `to` are both non-zero, `amount` of ``from``'s tokens
+     * will be transferred to `to`.
+     * - when `from` is zero, `amount` tokens will be minted for `to`.
+     * - when `to` is zero, `amount` of ``from``'s tokens will be burned.
+     * - `from` and `to` are never both zero.
+     *
+     * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
+     */
+    function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual {}
+
+    /**
+     * @dev Hook that is called after any transfer of tokens. This includes
+     * minting and burning.
+     *
+     * Calling conditions:
+     *
+     * - when `from` and `to` are both non-zero, `amount` of ``from``'s tokens
+     * has been transferred to `to`.
+     * - when `from` is zero, `amount` tokens have been minted for `to`.
+     * - when `to` is zero, `amount` of ``from``'s tokens have been burned.
+     * - `from` and `to` are never both zero.
+     *
+     * To learn more about hooks, head to xref:ROOT:extending-contracts.adoc#using-hooks[Using Hooks].
+     */
+    function _afterTokenTransfer(address from, address to, uint256 amount) internal virtual {}
 }

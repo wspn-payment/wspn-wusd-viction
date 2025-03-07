@@ -21,6 +21,7 @@
   "dependencies": {
     "@openzeppelin/contracts": "^5.1.0",
     "@openzeppelin/contracts-upgradeable": "^4.9.6",
+    "dotenv": "^16.4.7",
     "ethereumjs-util": "^7.1.5",
     "ethers": "^6.13.4",
     "solc": "^0.8.20"
