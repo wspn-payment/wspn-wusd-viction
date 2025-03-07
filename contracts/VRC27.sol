@@ -22,10 +22,9 @@ import {IERC20PermitUpgradeable} from "@openzeppelin/contracts-upgradeable/token
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import {IERC20Errors} from "./library/Errors/interface/IERC20Errors.sol";
-import {ECDSA} from "./library/Utils/ECDSA.sol";
 
 import {LibErrors} from "./library/Errors/LibErrors.sol";
-import {PausableUpgradeable} from "@openzeppelin/contracts-upgradeable/security/PausableUpgradeable.sol";
+import {AccessRegistrySubscriptionUpgradeable} from "./library/AccessRegistry/AccessRegistrySubscriptionUpgradeable.sol";
 import {PauseUpgradeable} from "./library/Utils/PauseUpgradeable.sol";
 
 /**
@@ -56,6 +55,7 @@ VRC25Upgradable,
 VRC25Permit,
 PauseUpgradeable,
 AccessControlUpgradeable,
+AccessRegistrySubscriptionUpgradeable,
 IERC20Errors,
 UUPSUpgradeable
 {
@@ -150,6 +150,7 @@ UUPSUpgradeable
         __VRC25_init(_name, _symbol,decimal);
         __Pause_init();
         initPermit();
+        __AccessRegistrySubscription_init(address(0));
 
         _grantRole(DEFAULT_ADMIN_ROLE, defaultAdmin);
         _grantRole(MINTER_ROLE, minter);
@@ -359,7 +360,7 @@ UUPSUpgradeable
     function supportsInterface(bytes4 interfaceId) public view virtual override(VRC25Upgradable,AccessControlUpgradeable) returns (bool) {
         return
             interfaceId == type(IERC1967Upgradeable).interfaceId ||
-            interfaceId == type(IERC20PermitUpgradeable).interfaceId ||
+//            interfaceId == type(IERC20PermitUpgradeable).interfaceId ||
             // interfaceId == type(IERC1822ProxiableUpgradeable).interfaceId ||
             super.supportsInterface(interfaceId);
     }
@@ -405,7 +406,7 @@ UUPSUpgradeable
      * - {ERC20F} is not paused.
      */
     /* solhint-disable no-empty-blocks */
-//    function _authorizeAccessRegistryUpdate() internal virtual override whenNotPaused onlyRole(CONTRACT_ADMIN_ROLE) {}
+    function _authorizeAccessRegistryUpdate() internal virtual override whenNotPaused onlyRole(CONTRACT_ADMIN_ROLE) {}
 
     /**
      * @notice This is a function that applies any validations required to allow Role Access operation (like grantRole or revokeRole ) to be executed.
