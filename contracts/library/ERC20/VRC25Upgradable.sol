@@ -4,6 +4,12 @@ pragma solidity ^0.8.20;
 import "../../interface/IVRC25.sol";
 import "../../interface/IERC165.sol";
 
+error NotOwner();
+error ZeroAddress();
+error InsufficientBalance();
+error InvalidNewOwner();
+error OnlyNewOwnerCanAccept();
+
 /**
  * @title Base VRC25 implementation
  * @notice VRC25Upgradable implementation for opt-in to gas sponsor program. This replace Ownable from OpenZeppelin as well.
@@ -40,7 +46,7 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
      * @dev Throws if called by any account other than the owner.
      */
     modifier onlyOwner() {
-        require(_owner == msg.sender, "VRC25: caller is not the owner");
+        if (_owner != msg.sender) revert NotOwner();
         _;
     }
 
@@ -197,7 +203,7 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
      * Can only be called by the newly transfered owner.
      */
     function acceptOwnership() external {
-        require(msg.sender == _newOwner, "VRC25: only new owner can accept ownership");
+        if (msg.sender != _newOwner) revert OnlyNewOwnerCanAccept();
         address oldOwner = _owner;
         _owner = _newOwner;
         _newOwner = address(0);
@@ -210,7 +216,7 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
      * Can only be called by the current owner.
      */
     function transferOwnership(address newOwner) external virtual onlyOwner {
-        require(newOwner != address(0), "VRC25: new owner is the zero address");
+        if (newOwner == address(0)) revert ZeroAddress();
         _newOwner = newOwner;
     }
 
@@ -247,9 +253,9 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
      * @param amount The amount to be transferred.
      */
     function _transfer(address from, address to, uint256 amount) internal {
-        require(from != address(0), "VRC25: transfer from the zero address");
-        require(to != address(0), "VRC25: transfer to the zero address");
-        require(amount <= _balances[from], "VRC25: insufficient balance");
+        if (from == address(0)) revert ZeroAddress();
+        if (to == address(0)) revert ZeroAddress();
+        if (amount > _balances[from]) revert InsufficientBalance();
         
         _beforeTokenTransfer(from, to, amount);
 
@@ -258,7 +264,6 @@ abstract contract VRC25Upgradable is IVRC25, IERC165 {
         emit Transfer(from, to, amount);
         
         _afterTokenTransfer(from, to, amount);
-
     }
 
     /**

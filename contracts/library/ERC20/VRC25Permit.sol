@@ -8,6 +8,9 @@ import "../Utils/EIP712.sol";
 
 import "./VRC25Upgradable.sol";
 
+error PermitExpired();
+error InvalidPermit();
+
 abstract contract VRC25Permit is VRC25Upgradable, EIP712, IVRC25Permit {
     bytes32 private constant PERMIT_TYPEHASH = keccak256("Permit(address owner,address spender,uint256 value,uint256 nonce,uint256 deadline)");
 
@@ -35,13 +38,31 @@ abstract contract VRC25Permit is VRC25Upgradable, EIP712, IVRC25Permit {
     /**
      * @dev See {IERC20Permit-permit}.
      */
-    function permit(address owner, address spender, uint256 value, uint256 deadline, uint8 v, bytes32 r, bytes32 s) public virtual override {
-        require(block.timestamp <= deadline, "VRC25: Permit expired");
+    function permit(
+        address owner,
+        address spender,
+        uint256 value,
+        uint256 deadline,
+        uint8 v,
+        bytes32 r,
+        bytes32 s
+    ) public virtual override {
+        if (block.timestamp > deadline) revert PermitExpired();
 
-        bytes32 structHash = keccak256(abi.encode(PERMIT_TYPEHASH, owner, spender, value, _useNonce(owner), deadline));
+        bytes32 structHash = keccak256(
+            abi.encode(
+                PERMIT_TYPEHASH,
+                owner,
+                spender,
+                value,
+                _useNonce(owner),
+                deadline
+            )
+        );
+        
         bytes32 hash = _hashTypedDataV4(structHash);
         address signer = ECDSA.recover(hash, v, r, s);
-        require(signer == owner, "VRC25: Invalid permit");
+        if (signer != owner) revert InvalidPermit();
 
         uint256 fee = estimateFee(0);
         _approve(owner, spender, value);

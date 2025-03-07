@@ -107,6 +107,9 @@ UUPSUpgradeable
      */
     bytes32 public constant RECOVERY_ROLE = keccak256("RECOVERY_ROLE");
 
+    // Cache interface IDs as constants to save gas and reduce bytecode
+    bytes4 private constant _IERC1967_INTERFACE_ID = type(IERC1967Upgradeable).interfaceId;
+
     /**
      * @notice This event is logged when the funds are recovered from an address that is not allowed
      * to participate in the system.
@@ -218,8 +221,8 @@ UUPSUpgradeable
      */
     function recoverTokens(address account, uint256 amount) external virtual onlyRole(RECOVERY_ROLE) {
         if (amount == 0) revert LibErrors.ZeroAmount();
-//        if (address(accessRegistry) == address(0)) revert LibErrors.AccessRegistryNotSet();
-//        if (accessRegistry.hasAccess(account, _msgSender(), _msgData())) revert LibErrors.RecoveryOnActiveAccount(account);
+        if (address(accessRegistry) == address(0)) revert LibErrors.AccessRegistryNotSet();
+        if (accessRegistry.hasAccess(account, _msgSender(), _msgData())) revert LibErrors.RecoveryOnActiveAccount(account);
         emit TokensRecovered(_msgSender(), account, amount);
         _transfer(account, _msgSender(), amount);
     }
@@ -359,9 +362,7 @@ UUPSUpgradeable
      */
     function supportsInterface(bytes4 interfaceId) public view virtual override(VRC25Upgradable,AccessControlUpgradeable) returns (bool) {
         return
-            interfaceId == type(IERC1967Upgradeable).interfaceId ||
-//            interfaceId == type(IERC20PermitUpgradeable).interfaceId ||
-            // interfaceId == type(IERC1822ProxiableUpgradeable).interfaceId ||
+            interfaceId == _IERC1967_INTERFACE_ID ||
             super.supportsInterface(interfaceId);
     }
 
@@ -432,7 +433,15 @@ UUPSUpgradeable
      * @param isSender Value indicating if the sender or receiver is being checked.
      */
     function _requireHasAccess(address account, bool isSender) internal view virtual {
-
+        if (address(accessRegistry) != address(0)) {
+			if (!accessRegistry.hasAccess(account, _msgSender(), _msgData())) {
+				if (isSender) {
+					revert ERC20InvalidSender(account);
+				} else {
+					revert ERC20InvalidReceiver(account);
+				}
+			}
+		}
     }
 
 }
