@@ -14,7 +14,7 @@ async function main() {
     const contractAddress = process.env.CONTRACT_ADDRESS;
     
     // Address to send tokens to
-    const recipientAddress = "0x2f85f9b7413D30Dc861c3b23F79fd66f34b2c9e4";
+    const recipientAddress = "";
     
     // Amount to transfer (e.g., 100 tokens with 18 decimals)
     const transferAmount = ethers.parseUnits("100", 18);

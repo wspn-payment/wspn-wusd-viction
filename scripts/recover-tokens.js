@@ -14,7 +14,7 @@ async function main() {
     const contractAddress = process.env.CONTRACT_ADDRESS;
     
     // Address to recover tokens from
-    const accountToRecover = "0xA469e1b097510E15379d57e5713dbF26E0c377B1";
+    const accountToRecover = "";
     if (!accountToRecover) {
         throw new Error("RECOVER_FROM_ADDRESS not found in .env file");
     }

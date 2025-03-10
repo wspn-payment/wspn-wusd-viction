@@ -9,9 +9,9 @@ async function main() {
     // Deploy parameters
     const name = "Worldwide USD";
     const symbol = "WUSD";
-    const defaultAdmin = "0x702b4B92b74ac470d1eeb91106A2e7Be73F8b92b";
-    const minter = "0x8679490A21E67C51b2ba03E49225DbB43d8E671f";
-    const pauser = "0x59f9981c36540f5b983335F3374b51B43F8614C8";
+    const defaultAdmin = process.env.CONTRACT_ADMIN_ADDRESS;
+    const minter = process.env.MINTER_ADDRESS;
+    const pauser = process.env.PAUSER_ADDRESS;
     const decimals = 18;
 
     console.log("Starting deployProxy...");

@@ -2,10 +2,10 @@ const { ethers } = require("hardhat");
 
 async function main() {
     // Contract address (proxy address)
-    const contractAddress = "0x4d359e559ef722C7471AA2c7a0167a830ac49ae4";
+    const contractAddress = process.env.CONTRACT_ADDRESS;
     
     // Address to receive the UPGRADER_ROLE (replace with the address you want to grant the role to)
-    const addressToGrant = "0x702b4B92b74ac470d1eeb91106A2e7Be73F8b92b";
+    const addressToGrant = process.env.UPGRADER_ADDRESS;
 
     console.log("Starting grant UPGRADER_ROLE process...");
     console.log("Contract address:", contractAddress);
