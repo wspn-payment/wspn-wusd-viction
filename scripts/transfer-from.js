@@ -14,10 +14,10 @@ async function main() {
     const contractAddress = process.env.CONTRACT_ADDRESS;
     
     // Owner address (address from which tokens will be transferred)
-    const ownerAddress = "0xA469e1b097510E15379d57e5713dbF26E0c377B1";
+    const ownerAddress = "";
     
     // Recipient address (address that will receive the tokens)
-    const recipientAddress = "0x1F580625d31D52A9D5B3e485194B97E8d3F02d24";
+    const recipientAddress = "";
     
     // Amount to transfer
     const transferAmount = ethers.parseUnits("14", 18);

@@ -3,7 +3,7 @@ const { ethers, upgrades } = require("hardhat");
 async function main() {
     // Get the proxy address from the previous deployment
     // Replace this with your deployed proxy address after running deploy-vrc25.js
-    const proxyAddress = "0x4d359e559ef722C7471AA2c7a0167a830ac49ae4";
+    const proxyAddress = "";
     
     console.log("Starting upgrade process...");
     console.log("Proxy address:", proxyAddress);

@@ -11,10 +11,10 @@ async function main() {
     const contractAddress = process.env.CONTRACT_ADDRESS;
     
     // Owner address (address that approved the tokens)
-    const ownerAddress = "0xA469e1b097510E15379d57e5713dbF26E0c377B1";
+    const ownerAddress = "";
     
     // Spender address (address that was approved to spend tokens)
-    const spenderAddress = "0x2f85f9b7413D30Dc861c3b23F79fd66f34b2c9e4";
+    const spenderAddress = "";
 
     console.log("Starting allowance check process...");
     console.log("Contract address:", contractAddress);

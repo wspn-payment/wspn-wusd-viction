@@ -14,14 +14,13 @@ async function main() {
     const contractAddress = process.env.CONTRACT_ADDRESS;
     
     // Minter address that has MINTER_ROLE
-    const minterAddress = "0xA469e1b097510E15379d57e5713dbF26E0c377B1";
+    const minterAddress = process.env.MINTER_ADDRESS;
     
     // Amount to mint (e.g., 1000 tokens with 18 decimals)
     const amountToMint = ethers.parseUnits("1000", 18);
     
     // Address to receive the minted tokens (in this case, minting to the same address)
-    // const recipientAddress = "0x2f85f9b7413D30Dc861c3b23F79fd66f34b2c9e4";
-    const recipientAddress = "0xA469e1b097510E15379d57e5713dbF26E0c377B1";
+    const recipientAddress = minterAddress;
 
     console.log("Starting mint process...");
     console.log("Contract address:", contractAddress);
