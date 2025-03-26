@@ -18,7 +18,6 @@ pragma solidity ^0.8.20;
 import {VRC25Permit} from "./library/ERC20/VRC25Permit.sol";
 import {VRC25Upgradable} from "./library/ERC20/VRC25Upgradable.sol";
 import {IERC1967Upgradeable} from "@openzeppelin/contracts-upgradeable/interfaces/IERC1967Upgradeable.sol";
-import {IERC20PermitUpgradeable} from "@openzeppelin/contracts-upgradeable/token/ERC20/extensions/IERC20PermitUpgradeable.sol";
 import {UUPSUpgradeable} from "@openzeppelin/contracts-upgradeable/proxy/utils/UUPSUpgradeable.sol";
 import {AccessControlUpgradeable} from "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import {IERC20Errors} from "./library/Errors/interface/IERC20Errors.sol";
@@ -167,10 +166,10 @@ UUPSUpgradeable
      *
      * - Can only be invoked by the address that has the role "MINTER_ROLE".
      * - {ERC20F} is not paused. (checked internally by {_beforeTokenTransfer})
-     * - `to` is a non-zero address. (checked internally by {ERC20Upgradeable}.{_mint})
+     * - `to` is a non-zero address. (checked internally by {VRC25Upgradeable}.{_mint})
      * - `to` is allowed to receive tokens.
      *
-     * This function emits a {Transfer} event as part of {ERC20Upgradeable._mint}.
+     * This function emits a {Transfer} event as part of {VRC25Upgradeable._mint}.
      *
      * @param to The address that will receive the issued tokens.
      * @param amount The number of tokens to be issued.
@@ -189,10 +188,10 @@ UUPSUpgradeable
      *
      * - Can only be invoked by the address that has the role "BURNER_ROLE".
      * - {ERC20F} is not paused. (checked internally by {_beforeTokenTransfer})
-     * - `amount` is less than or equal to the caller's balance. (checked internally by {ERC20Upgradeable}.{_burn})
-     * - `amount` is greater than 0. (checked internally by {ERC20Upgradeable}.{_burn})
+     * - `amount` is less than or equal to the caller's balance. (checked internally by {VRC25Upgradeable}.{_burn})
+     * - `amount` is not equals 0. (checked internally by {VRC25Upgradeable}.{_burn})
      *
-     * This function emits a {Transfer} event as part of {ERC20Upgradeable._burn}.
+     * This function emits a {Transfer} event as part of {VRC25Upgradeable._burn}.
      *
      * @param amount The number of tokens to be burned.
      */
@@ -210,9 +209,9 @@ UUPSUpgradeable
      * - `caller` of this function must have the "RECOVERY_ROLE".
      * - {ERC20F} is not paused.(checked internally by {_beforeTokenTransfer}).
      * - `account` address must be not be allowed to hold tokens.
-     * - `account` must be a non-zero address. (checked internally in {ERC20Upgradeable._transfer})
+     * - `account` must be a non-zero address. (checked internally in {VRC25Upgradeable._transfer})
      * - `amount` is greater than 0.
-     * - `amount` is less than or equal to the balance of the account. (checked internally in {ERC20Upgradeable._transfer})
+     * - `amount` is less than or equal to the balance of the account. (checked internally in {VRC25Upgradeable._transfer})
      *
      * This function emits a {TokensRecovered} event, signalling that the funds of the given address were recovered.
      *
@@ -228,16 +227,6 @@ UUPSUpgradeable
     }
 
     /**
-     * @notice This is a function used to get the version of the contract.
-     * @dev This function get the latest deployment version from the {Initializable}.{_getInitializedVersion}.
-     * With every new deployment, the version number will be incremented.
-     * @return The version of the contract.
-     */
-    // function version() external view virtual returns (uint64) {
-    //     return uint64(super._getInitializedVersion());
-    // }
-
-    /**
      * @notice This is a function that allows an owner to provide off-chain permission for a specific `spender` to spend
      * a certain amount of tokens on their behalf, using an ECDSA signature. This signature is then provided to this
      * {ERC20F} contract which verifies the signature and updates the allowance. This exercise reduces the number
@@ -249,14 +238,14 @@ UUPSUpgradeable
      * Calling Conditions:
      *
      * - {ERC20F} is not paused.
-     * - The `owner` must be a non-zero address. (checked internally by {ERC20Upgradeable}.{_approve})
-     * - `spender` must be a non-zero address. (checked internally by {ERC20Upgradeable}.{_approve})
-     * - `deadline` must be a timestamp in the future. (checked internally by {ERC20PermitUpgradeable}.{permit})
+     * - The `owner` must be a non-zero address. (checked internally by {VRC25Upgradeable}.{_approve})
+     * - `spender` must be a non-zero address. (checked internally by {VRC25Upgradeable}.{_approve})
+     * - `deadline` must be a timestamp in the future. (checked internally by {VRC25Permit}.{permit})
      * - `v`, `r` and `s` must be a valid `secp256k1` signature from `owner`
-     * over the EIP712-formatted function arguments. (checked internally by {ERC20PermitUpgradeable}.{permit})
+     * over the EIP712-formatted function arguments. (checked internally by {VRC25Permit}.{permit})
      * - The signature must use `owner`'s current nonce
      *
-     * This function emits an {Approval} event as part of {ERC20Upgradeable._approve}.
+     * This function emits an {Approval} event as part of {VRC25Upgradeable._approve}.
      *
      * @param owner The address that will sign the approval.
      * @param spender The address that will receive the approval.
@@ -287,12 +276,12 @@ UUPSUpgradeable
      * @dev Calling Conditions:
      *
      * - {ERC20F} is not paused.
-     * - The `spender` must be a non-zero address. (checked internally by {ERC20Upgradeable}.{_approve})
+     * - The `spender` must be a non-zero address. (checked internally by {VRC25Upgradeable}.{_approve})
      *
      * If the spender is already authorized to spend a non-zero amount of token, the `amount` parameter
      * will overwrite the previously authorized amount.
      *
-     * Upon successful execution function emits an {Approval} event as part of {ERC20Upgradeable._approve}.
+     * Upon successful execution function emits an {Approval} event as part of {VRC25Upgradeable._approve}.
      *
      * @param spender The address getting an allowance.
      * @param amount The amount allowed to be spent.
@@ -311,10 +300,10 @@ UUPSUpgradeable
      * - {ERC20F} is not paused. (checked internally by {_beforeTokenTransfer})
      * - The `sender` is allowed to send tokens.
      * - The `to` is allowed to receive tokens.
-     * - `to` is a non-zero address. (checked internally by {ERC20Upgradeable}.{_transfer})
-     * - `amount` is not greater than sender's balance. (checked internally by {ERC20Upgradeable}.{_transfer})
+     * - `to` is a non-zero address. (checked internally by {VRC25Upgradeable}.{_transfer})
+     * - `amount` is not greater than sender's balance. (checked internally by {VRC25Upgradeable}.{_transfer})
      *
-     * This function emits a {Transfer} event as part of {ERC20Upgradeable._transfer}.
+     * This function emits a {Transfer} event as part of {VRC25Upgradeable._transfer}.
      *
      * @param to The address that will receive the tokens.
      * @param amount The number of tokens that will be sent to the `recipient`.
@@ -330,18 +319,18 @@ UUPSUpgradeable
      * @notice This is a function used to transfer tokens on behalf of the `from` address to
      * the `to` address.
      *
-     * This function emits an {Approval} event as part of {ERC20Upgradeable._approve}.
-     * This function emits a {Transfer} event as part of {ERC20Upgradeable._transfer}.
+     * This function emits an {Approval} event as part of {VRC25Upgradeable._approve}.
+     * This function emits a {Transfer} event as part of {VRC25Upgradeable._transfer}.
      *
      * @dev Calling Conditions:
      *
      * - {ERC20F} is not paused. (checked internally by {_beforeTokenTransfer})
      * - The `from` is allowed to send tokens.
      * - The `to` is allowed to receive tokens.
-     * - `from` is a non-zero address. (checked internally by {ERC20Upgradeable}.{_transfer})
-     * - `to` is a non-zero address. (checked internally by {ERC20Upgradeable}.{_transfer})
+     * - `from` is a non-zero address. (checked internally by {VRC25Upgradeable}.{_transfer})
+     * - `to` is a non-zero address. (checked internally by {VRC25Upgradeable}.{_transfer})
      * - `amount` is not greater than `from`'s balance or caller's allowance of `from`'s funds. (checked internally
-     *   by {ERC20Upgradeable}.{transferFrom})
+     *   by {VRC25Upgradeable}.{transferFrom})
      * - `amount` is greater than 0. (checked internally by {_spendAllowance})
      *
      * @param from The address that tokens will be transferred on behalf of.
@@ -370,7 +359,7 @@ UUPSUpgradeable
      * @notice This function works as a middle layer and performs some checks before
      * it allows a transfer to operate.
      *
-     * @dev A hook inherited from ERC20Upgradeable.
+     * @dev A hook inherited from VRC25Upgradeable.
      *
      * This function performs the following checks, and reverts when not met:
      *
@@ -382,6 +371,15 @@ UUPSUpgradeable
      */
     function _beforeTokenTransfer(address from, address to, uint256 amount) internal virtual override whenNotPaused {}
 
+    /**
+     * @notice This method is a crucial part for managing the upgrade permission of smart contracts.
+     *
+     * This function performs the following checks, and reverts when not met:
+     *
+     * - Can only be invoked by the address that has the role "UPGRADER_ROLE".
+     *
+     * @param newImplementation The address that new implementation logic.
+     */
     function _authorizeUpgrade(address newImplementation) internal virtual override onlyRole(UPGRADER_ROLE) {}
 
     /**
@@ -409,18 +407,13 @@ UUPSUpgradeable
     /* solhint-disable no-empty-blocks */
     function _authorizeAccessRegistryUpdate() internal virtual override whenNotPaused onlyRole(CONTRACT_ADMIN_ROLE) {}
 
-    /**
-     * @notice This is a function that applies any validations required to allow Role Access operation (like grantRole or revokeRole ) to be executed.
-     *
-     * @dev Reverts when the {ERC20F} contract is paused.
-     *
-     * Calling Conditions:
-     *
-     * - {ERC20F} is not paused.
-     */
-    /* solhint-disable no-empty-blocks */
-    // function _authorizeRoleAccess() internal virtual override whenNotPaused {}
 
+    /**
+     * @notice The function of this method is to estimate the gas  fee.
+     * The function use the default minFee() as baseFee.
+     *
+     * @param value The amount of current transaction.
+     */
     function _estimateFee(uint256 value) internal view virtual override  returns (uint256){
         return minFee();
     }

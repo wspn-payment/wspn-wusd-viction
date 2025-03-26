@@ -25,8 +25,8 @@ module.exports = {
       allowUnlimitedContractSize: true,
     },
     'tomo-testnet': {
-      url: 'https://rpc-testnet.viction.xyz',
-      accounts: [process.env.PRIVATE_KEY, process.env.MINTER_PRIVATE_KEY, process.env.BURNER_PRIVATE_KEY],
+      url: 'https://rpc.viction.xyz',
+      accounts: [process.env.PRIVATE_KEY],
       gas: 6000000, // 设置更高的 Gas 限制
       gasPrice: 250000000, // 设置 Gas 价格（可选）
     },

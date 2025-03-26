@@ -6,56 +6,13 @@ async function main() {
 
     // 合约地址
     // const contractAddress = '0xdB1E5230e016b83b03C79D7e10F7d9D000E4569a';
-    const contractAddress = '0x36AA91C120fC3E354EF1c9452cA7584eC7884D65';
+    const contractAddress = '0xF70AcE4a2A4A31EF17129A93bb970747CBc918EE';
     // const contractAddress = '0x85D3720826769AbEa6BC0C8c80159e196A8aE8D3';
 
     const ABI = [
         {
             "inputs": [],
-            "name": "AccessControlBadConfirmation",
-            "type": "error"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "account",
-                    "type": "address"
-                },
-                {
-                    "internalType": "bytes32",
-                    "name": "neededRole",
-                    "type": "bytes32"
-                }
-            ],
-            "name": "AccessControlUnauthorizedAccount",
-            "type": "error"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "target",
-                    "type": "address"
-                }
-            ],
-            "name": "AddressEmptyCode",
-            "type": "error"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "implementation",
-                    "type": "address"
-                }
-            ],
-            "name": "ERC1967InvalidImplementation",
-            "type": "error"
-        },
-        {
-            "inputs": [],
-            "name": "ERC1967NonPayable",
+            "name": "AccessRegistryNotSet",
             "type": "error"
         },
         {
@@ -82,7 +39,7 @@ async function main() {
         },
         {
             "inputs": [],
-            "name": "FailedCall",
+            "name": "InsufficientBalance",
             "type": "error"
         },
         {
@@ -92,34 +49,93 @@ async function main() {
         },
         {
             "inputs": [],
-            "name": "InvalidInitialization",
+            "name": "InvalidImplementation",
             "type": "error"
         },
         {
             "inputs": [],
-            "name": "NotInitializing",
+            "name": "InvalidPermit",
             "type": "error"
         },
         {
             "inputs": [],
-            "name": "UUPSUnauthorizedCallContext",
+            "name": "NotOwner",
+            "type": "error"
+        },
+        {
+            "inputs": [],
+            "name": "OnlyNewOwnerCanAccept",
+            "type": "error"
+        },
+        {
+            "inputs": [],
+            "name": "PermitExpired",
             "type": "error"
         },
         {
             "inputs": [
                 {
-                    "internalType": "bytes32",
-                    "name": "slot",
-                    "type": "bytes32"
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
                 }
             ],
-            "name": "UUPSUnsupportedProxiableUUID",
+            "name": "RecoveryOnActiveAccount",
+            "type": "error"
+        },
+        {
+            "inputs": [],
+            "name": "ZeroAddress",
             "type": "error"
         },
         {
             "inputs": [],
             "name": "ZeroAmount",
             "type": "error"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "caller",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "oldAccessRegistry",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "newAccessRegistry",
+                    "type": "address"
+                }
+            ],
+            "name": "AccessRegistryUpdated",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "previousAdmin",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "newAdmin",
+                    "type": "address"
+                }
+            ],
+            "name": "AdminChanged",
+            "type": "event"
         },
         {
             "anonymous": false,
@@ -144,6 +160,19 @@ async function main() {
                 }
             ],
             "name": "Approval",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "beacon",
+                    "type": "address"
+                }
+            ],
+            "name": "BeaconUpgraded",
             "type": "event"
         },
         {
@@ -195,9 +224,9 @@ async function main() {
             "inputs": [
                 {
                     "indexed": false,
-                    "internalType": "uint64",
+                    "internalType": "uint8",
                     "name": "version",
-                    "type": "uint64"
+                    "type": "uint8"
                 }
             ],
             "name": "Initialized",
@@ -479,19 +508,6 @@ async function main() {
         },
         {
             "inputs": [],
-            "name": "SALVAGE_ROLE",
-            "outputs": [
-                {
-                    "internalType": "bytes32",
-                    "name": "",
-                    "type": "bytes32"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
             "name": "UPGRADER_ROLE",
             "outputs": [
                 {
@@ -505,20 +521,33 @@ async function main() {
         },
         {
             "inputs": [],
-            "name": "UPGRADE_INTERFACE_VERSION",
+            "name": "acceptOwnership",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "accessRegistry",
             "outputs": [
                 {
-                    "internalType": "string",
+                    "internalType": "contract IAccessRegistry",
                     "name": "",
-                    "type": "string"
+                    "type": "address"
                 }
             ],
             "stateMutability": "view",
             "type": "function"
         },
         {
-            "inputs": [],
-            "name": "acceptOwnership",
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_accessRegistry",
+                    "type": "address"
+                }
+            ],
+            "name": "accessRegistryUpdate",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
@@ -527,7 +556,7 @@ async function main() {
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "owner",
+                    "name": "owner_",
                     "type": "address"
                 },
                 {
@@ -575,7 +604,7 @@ async function main() {
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "owner",
+                    "name": "owner_",
                     "type": "address"
                 }
             ],
@@ -825,6 +854,13 @@ async function main() {
         },
         {
             "inputs": [],
+            "name": "pause",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
             "name": "paused",
             "outputs": [
                 {
@@ -919,7 +955,7 @@ async function main() {
                 },
                 {
                     "internalType": "address",
-                    "name": "callerConfirmation",
+                    "name": "account",
                     "type": "address"
                 }
             ],
@@ -1071,6 +1107,26 @@ async function main() {
             "type": "function"
         },
         {
+            "inputs": [],
+            "name": "unpause",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "newImplementation",
+                    "type": "address"
+                }
+            ],
+            "name": "upgradeTo",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "inputs": [
                 {
                     "internalType": "address",
@@ -1086,19 +1142,6 @@ async function main() {
             "name": "upgradeToAndCall",
             "outputs": [],
             "stateMutability": "payable",
-            "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "version",
-            "outputs": [
-                {
-                    "internalType": "uint64",
-                    "name": "",
-                    "type": "uint64"
-                }
-            ],
-            "stateMutability": "view",
             "type": "function"
         }
     ]

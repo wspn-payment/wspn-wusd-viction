@@ -4,7 +4,7 @@ async function main() {
     const [deployer] = await ethers.getSigners();
     console.log("apply the contract using the account", deployer.address);
 
-    const tokenAddress = "0x9AD16B6D3E401b8dF25C985f9bEbb490dB8aFE78";
+    const tokenAddress = "0xBA73E59F11597c1c13B0D9114688Efb6A6D430F6";
 
     const contractAddress = '0x8c0faeb5C6bEd2129b8674F262Fd45c4e9468bee';
 

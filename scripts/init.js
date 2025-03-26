@@ -8,55 +8,12 @@ async function main() {
     // const contractAddress = '0xdB1E5230e016b83b03C79D7e10F7d9D000E4569a';
     // const contractAddress = '0x9AD16B6D3E401b8dF25C985f9bEbb490dB8aFE78';
     // const contractAddress = '0x85D3720826769AbEa6BC0C8c80159e196A8aE8D3';
-    const contractAddress = '0x654672b55560968C87c232679a09f4E435c98bF2';
+    const contractAddress = '0xBA73E59F11597c1c13B0D9114688Efb6A6D430F6';
 
     const ABI = [
         {
             "inputs": [],
-            "name": "AccessControlBadConfirmation",
-            "type": "error"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "account",
-                    "type": "address"
-                },
-                {
-                    "internalType": "bytes32",
-                    "name": "neededRole",
-                    "type": "bytes32"
-                }
-            ],
-            "name": "AccessControlUnauthorizedAccount",
-            "type": "error"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "target",
-                    "type": "address"
-                }
-            ],
-            "name": "AddressEmptyCode",
-            "type": "error"
-        },
-        {
-            "inputs": [
-                {
-                    "internalType": "address",
-                    "name": "implementation",
-                    "type": "address"
-                }
-            ],
-            "name": "ERC1967InvalidImplementation",
-            "type": "error"
-        },
-        {
-            "inputs": [],
-            "name": "ERC1967NonPayable",
+            "name": "AccessRegistryNotSet",
             "type": "error"
         },
         {
@@ -83,7 +40,7 @@ async function main() {
         },
         {
             "inputs": [],
-            "name": "FailedCall",
+            "name": "InsufficientBalance",
             "type": "error"
         },
         {
@@ -93,34 +50,93 @@ async function main() {
         },
         {
             "inputs": [],
-            "name": "InvalidInitialization",
+            "name": "InvalidImplementation",
             "type": "error"
         },
         {
             "inputs": [],
-            "name": "NotInitializing",
+            "name": "InvalidPermit",
             "type": "error"
         },
         {
             "inputs": [],
-            "name": "UUPSUnauthorizedCallContext",
+            "name": "NotOwner",
+            "type": "error"
+        },
+        {
+            "inputs": [],
+            "name": "OnlyNewOwnerCanAccept",
+            "type": "error"
+        },
+        {
+            "inputs": [],
+            "name": "PermitExpired",
             "type": "error"
         },
         {
             "inputs": [
                 {
-                    "internalType": "bytes32",
-                    "name": "slot",
-                    "type": "bytes32"
+                    "internalType": "address",
+                    "name": "account",
+                    "type": "address"
                 }
             ],
-            "name": "UUPSUnsupportedProxiableUUID",
+            "name": "RecoveryOnActiveAccount",
+            "type": "error"
+        },
+        {
+            "inputs": [],
+            "name": "ZeroAddress",
             "type": "error"
         },
         {
             "inputs": [],
             "name": "ZeroAmount",
             "type": "error"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "caller",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "oldAccessRegistry",
+                    "type": "address"
+                },
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "newAccessRegistry",
+                    "type": "address"
+                }
+            ],
+            "name": "AccessRegistryUpdated",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "previousAdmin",
+                    "type": "address"
+                },
+                {
+                    "indexed": false,
+                    "internalType": "address",
+                    "name": "newAdmin",
+                    "type": "address"
+                }
+            ],
+            "name": "AdminChanged",
+            "type": "event"
         },
         {
             "anonymous": false,
@@ -145,6 +161,19 @@ async function main() {
                 }
             ],
             "name": "Approval",
+            "type": "event"
+        },
+        {
+            "anonymous": false,
+            "inputs": [
+                {
+                    "indexed": true,
+                    "internalType": "address",
+                    "name": "beacon",
+                    "type": "address"
+                }
+            ],
+            "name": "BeaconUpgraded",
             "type": "event"
         },
         {
@@ -196,9 +225,9 @@ async function main() {
             "inputs": [
                 {
                     "indexed": false,
-                    "internalType": "uint64",
+                    "internalType": "uint8",
                     "name": "version",
-                    "type": "uint64"
+                    "type": "uint8"
                 }
             ],
             "name": "Initialized",
@@ -480,19 +509,6 @@ async function main() {
         },
         {
             "inputs": [],
-            "name": "SALVAGE_ROLE",
-            "outputs": [
-                {
-                    "internalType": "bytes32",
-                    "name": "",
-                    "type": "bytes32"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
-        },
-        {
-            "inputs": [],
             "name": "UPGRADER_ROLE",
             "outputs": [
                 {
@@ -506,20 +522,33 @@ async function main() {
         },
         {
             "inputs": [],
-            "name": "UPGRADE_INTERFACE_VERSION",
+            "name": "acceptOwnership",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
+            "name": "accessRegistry",
             "outputs": [
                 {
-                    "internalType": "string",
+                    "internalType": "contract IAccessRegistry",
                     "name": "",
-                    "type": "string"
+                    "type": "address"
                 }
             ],
             "stateMutability": "view",
             "type": "function"
         },
         {
-            "inputs": [],
-            "name": "acceptOwnership",
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "_accessRegistry",
+                    "type": "address"
+                }
+            ],
+            "name": "accessRegistryUpdate",
             "outputs": [],
             "stateMutability": "nonpayable",
             "type": "function"
@@ -528,7 +557,7 @@ async function main() {
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "owner",
+                    "name": "owner_",
                     "type": "address"
                 },
                 {
@@ -576,7 +605,7 @@ async function main() {
             "inputs": [
                 {
                     "internalType": "address",
-                    "name": "owner",
+                    "name": "owner_",
                     "type": "address"
                 }
             ],
@@ -826,6 +855,13 @@ async function main() {
         },
         {
             "inputs": [],
+            "name": "pause",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [],
             "name": "paused",
             "outputs": [
                 {
@@ -920,7 +956,7 @@ async function main() {
                 },
                 {
                     "internalType": "address",
-                    "name": "callerConfirmation",
+                    "name": "account",
                     "type": "address"
                 }
             ],
@@ -1072,6 +1108,26 @@ async function main() {
             "type": "function"
         },
         {
+            "inputs": [],
+            "name": "unpause",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
+            "inputs": [
+                {
+                    "internalType": "address",
+                    "name": "newImplementation",
+                    "type": "address"
+                }
+            ],
+            "name": "upgradeTo",
+            "outputs": [],
+            "stateMutability": "nonpayable",
+            "type": "function"
+        },
+        {
             "inputs": [
                 {
                     "internalType": "address",
@@ -1088,66 +1144,53 @@ async function main() {
             "outputs": [],
             "stateMutability": "payable",
             "type": "function"
-        },
-        {
-            "inputs": [],
-            "name": "version",
-            "outputs": [
-                {
-                    "internalType": "uint64",
-                    "name": "",
-                    "type": "uint64"
-                }
-            ],
-            "stateMutability": "view",
-            "type": "function"
         }
     ]
 
-    const gasLimit = 25000000;
+    // const gasLimit = 25000000;
     const contract = new ethers.Contract(contractAddress, ABI, deployer);
-    //初始化合约
-    const name = "Worldwide USD";
-    const symbol = "WUSD";
-    const defaultAdmin = "0x702b4B92b74ac470d1eeb91106A2e7Be73F8b92b"; // 设置默认管理员地址
-    const minter = "0x1a41b5922E926Cca1EAa8afAC55bdDce40FDBe61"; // 设置铸币人地址
-    const pauser = "0xa2fAA105883af5CbEF6F95826Db420E5AB5594fC"; // 设置暂停人地址
-    const decimal = 18;
+    // //初始化合约
+    // const name = "Worldwide USD";
+    // const symbol = "WUSD";
+    // const defaultAdmin = "0x702b4B92b74ac470d1eeb91106A2e7Be73F8b92b"; // 设置默认管理员地址
+    // const minter = "0x1a41b5922E926Cca1EAa8afAC55bdDce40FDBe61"; // 设置铸币人地址
+    // const pauser = "0xa2fAA105883af5CbEF6F95826Db420E5AB5594fC"; // 设置暂停人地址
+    // const decimal = 18;
+    // //
+    // const tx1 = await contract.initialize(name, symbol, defaultAdmin, minter, pauser, decimal);
+    // await tx1.wait();
+    // console.log("Contract initialized")
     //
-    const tx1 = await contract.initialize(name, symbol, defaultAdmin, minter, pauser, decimal);
-    await tx1.wait();
-    console.log("Contract initialized")
-
-    const name1 = await contract.name();
-    const symbol1 = await contract.symbol();
-    console.log(name1)
-    console.log(symbol1)
+    // const name1 = await contract.name();
+    // const symbol1 = await contract.symbol();
+    // console.log(name1)
+    // console.log(symbol1)
 
     // 获取角色
-    // const CONTRACT_ADMIN_ROLE = await contract.CONTRACT_ADMIN_ROLE();
-    // const MINTER_ROLE = await contract.MINTER_ROLE();
-    // const PAUSER_ROLE = await contract.PAUSER_ROLE();
-    // const UPGRADER_ROLE = await contract.UPGRADER_ROLE();
-    // const DEFAULT_ADMIN_ROLE = await contract.DEFAULT_ADMIN_ROLE();
+    const CONTRACT_ADMIN_ROLE = await contract.CONTRACT_ADMIN_ROLE();
+    const MINTER_ROLE = await contract.MINTER_ROLE();
+    const PAUSER_ROLE = await contract.PAUSER_ROLE();
+    const UPGRADER_ROLE = await contract.UPGRADER_ROLE();
+    const DEFAULT_ADMIN_ROLE = await contract.DEFAULT_ADMIN_ROLE();
+
+    console.log(CONTRACT_ADMIN_ROLE)
+    console.log(MINTER_ROLE)
+    console.log(PAUSER_ROLE)
+    console.log(UPGRADER_ROLE)
+    console.log(DEFAULT_ADMIN_ROLE)
     //
-    // console.log(CONTRACT_ADMIN_ROLE)
-    // console.log(MINTER_ROLE)
-    // console.log(PAUSER_ROLE)
-    // console.log(UPGRADER_ROLE)
-    // console.log(DEFAULT_ADMIN_ROLE)
-    // //
     // const hasMintRole = await contract.hasRole("0x9f2df0fed2c77648de5860a4cc508cd0818c85b8b8a1ab4ceeef8d981c8956a6","0x1a41b5922E926Cca1EAa8afAC55bdDce40FDBe61");
     // console.log("hasMintRole",hasMintRole);
     //
     // const hasPaushRole = await contract.hasRole("0x65d7a28e3265b37a6474929f336521b332c1681b933f6cb9f3376673440d862a","0xa2fAA105883af5CbEF6F95826Db420E5AB5594fC");
     // console.log("hasPaushRole",hasPaushRole)
-    // //
-    // const tx1 = await contract.grantRole("0x189ab7a9244df0848122154315af71fe140f3db0fe014031783b0946b8c9d2e3","0x4a48240E0062dfE01369840D89804FE45Eb8a41E");
-    // await tx1.wait();
-    // console.log("upgrader_role has granted!")
-    // const hasUpgraderRole = await contract.hasRole("0x189ab7a9244df0848122154315af71fe140f3db0fe014031783b0946b8c9d2e3","0x4a48240E0062dfE01369840D89804FE45Eb8a41E");
-    // console.log("hasUpgraderRole",hasUpgraderRole)
     //
+    // const tx0 = await contract.grantRole("0x189ab7a9244df0848122154315af71fe140f3db0fe014031783b0946b8c9d2e3","0x4a48240E0062dfE01369840D89804FE45Eb8a41E");
+    // await tx0.wait();
+    console.log("upgrader_role has granted!")
+    const hasUpgraderRole = await contract.hasRole("0x189ab7a9244df0848122154315af71fe140f3db0fe014031783b0946b8c9d2e3","0x4a48240E0062dfE01369840D89804FE45Eb8a41E");
+    console.log("hasUpgraderRole",hasUpgraderRole)
+
     // const tx2 = await contract.grantRole("0x2ce8d04a9c35987429af538825cd2438cc5c5bb5dc427955f84daaa3ea105016","0x4a48240E0062dfE01369840D89804FE45Eb8a41E");
     // await tx2.wait();
     // console.log("contract admin has granted!")
@@ -1165,8 +1208,8 @@ async function main() {
     // console.log("contract default admin has granted!")
     // const hasBurnRole = await contract.hasRole("0x3c11d16cbaffd01df69ce1c404f6340ee057498f5f00246190ea54220576a848","0xdD74F8Ba3AD0CF39AE9EaDE98232dfAb596362Ef");
     // console.log("hasBurnRole",hasBurnRole)
-
-
+    //
+    //
     // const hasDefaultAdmin = await contract.hasRole("0x0000000000000000000000000000000000000000000000000000000000000000","0x702b4B92b74ac470d1eeb91106A2e7Be73F8b92b");
     // console.log("hasDefaultAdmin",hasDefaultAdmin)
     // const tx5 = await contract.renounceRole("0x0000000000000000000000000000000000000000000000000000000000000000","0x702b4B92b74ac470d1eeb91106A2e7Be73F8b92b");
